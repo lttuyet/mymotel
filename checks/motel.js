@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const SALT_ROUNDS = 9;
-const { formatString } = require('./basic');
+const { formatString, checkImage } = require('./basic');
 
 const checkName = async (name) => {
     try {
@@ -27,12 +27,18 @@ const checkPassword = async (password) => {
     }
 }
 
-const checkRegister = async (name, password) => {
+const checkRegister = async (name, image, password) => {
     try {
         name = await checkName(name);
         password = await checkPassword(password);
 
-        return { name, password };
+        try {
+            image = await checkImage(image);
+        } catch (e) {
+            image = process.env.IMG_MOTEL_DEFAULT;
+        }
+
+        return { name, image, password };
     } catch (e) {
         console.log("ERROR: " + e);
         throw e;

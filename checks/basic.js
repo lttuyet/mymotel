@@ -22,6 +22,22 @@ const formatString = (s) => {
     }
 }
 
+const checkImage = async (image) => {
+    try {
+        image = image.trim();
+
+        if (image && image.split(" ").length > 1 || image.length < 1) {
+            throw "Hình ảnh không hợp lệ!";
+        }
+
+        return image;
+    } catch (e) {
+        console.log("ERROR checks\basic\checkImage: " + e);
+        throw e;
+    }
+}
+
 module.exports = {
-    formatString
+    formatString,
+    checkImage
 }

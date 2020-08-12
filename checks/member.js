@@ -1,4 +1,4 @@
-const { formatString } = require('./basic');
+const { formatString, checkImage } = require('./basic');
 const Member = require('../models/members');
 
 const checkName = async (name) => {
@@ -34,12 +34,18 @@ const checkEmail = async (email) => {
     }
 }
 
-const checkRegister = async (name, email) => {
+const checkRegister = async (name, image, email) => {
     try {
         name = await checkName(name);
         email = await checkEmail(email);
 
-        return { name, email };
+        try {
+            image = await checkImage(image);
+        } catch (e) {
+            image = process.env.IMG_MEMBER_DEFAULT;
+        }
+
+        return { name, email, image };
     } catch (e) {
         console.log("ERROR: " + e);
         throw e;

@@ -8,5 +8,6 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/register', motelController.register);
+router.post('/login', motelController.login);
 
 module.exports = router;

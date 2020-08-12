@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const motelSchema = new Schema({
     name: { type: String, required: true, trim: true },
+    image: { type: String, required: true, trim: true },
     password: { type: String, required: true }
 }, {
     versionKey: false

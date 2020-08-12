@@ -9,14 +9,15 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
-// Config .env
+// Config .env ----------
 const dotenv = require("dotenv");
 dotenv.config();
 
-// Connect DB
+// Connect DB ----------
 const connectDB = require("./dbs");
 connectDB();
 
+// Cors ----------
 var cors = require('cors');
 var allowCrossDomain = function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -27,6 +28,12 @@ var allowCrossDomain = function (req, res, next) {
 
 app.use(cors());
 app.use(allowCrossDomain);
+
+// Passport -----------
+var passport=require('passport');
+
+// Passport Config
+// require("./controllers/passport")(passport);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
