@@ -25,9 +25,9 @@ module.exports = function (passport) {
                 }
 
                 if (isMatch) {
-                    return done(null, user);
+                    return done(null, { user, motel });
                 } else {
-                    return done(null, false, { status: "failed", code: 2, message: "Sai mật khẩu!" });
+                    return done(null, false, { status: "failed", message: "Sai mật khẩu!" });
                 }
             });
         })

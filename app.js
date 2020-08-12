@@ -30,10 +30,10 @@ app.use(cors());
 app.use(allowCrossDomain);
 
 // Passport -----------
-var passport=require('passport');
+const passport=require('passport');
 
 // Passport Config
-// require("./controllers/passport")(passport);
+require("./passport")(passport);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
