@@ -23,3 +23,25 @@ exports.add = async (req, res) => {
         });
     }
 }
+
+exports.edit = async (req, res) => {
+    try {
+        const { _id } = req.user;
+        const { name, email, image } = req.body;
+        const data = await checkMember.checkEdit(_id, name, image, email);
+        const member = await Member.updateOne({ _id }, data, { runValidators: true });
+
+        return res.json({
+            status: "success",
+            message: "Cập nhật thông tin cá nhân thành công!"
+        });
+    } catch (e) {
+        console.log("ERROR: ");
+        console.log(e);
+
+        return res.json({
+            status: "failed",
+            message: e.message
+        });
+    }
+}

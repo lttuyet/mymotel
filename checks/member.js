@@ -21,12 +21,6 @@ const checkEmail = async (email) => {
             throw { message: "Email không hợp lệ!" };
         }
 
-        const member = await Member.findOne({ email });
-
-        if (member) {
-            throw { message: "Email đã tồn tại!" };
-        }
-
         return email;
     } catch (e) {
         console.log("ERROR: " + e);
@@ -38,6 +32,12 @@ const checkRegister = async (name, image, email) => {
     try {
         name = await checkName(name);
         email = await checkEmail(email);
+
+        const member = await Member.findOne({ email });
+
+        if (member) {
+            throw { message: "Email đã tồn tại!" };
+        }
 
         try {
             image = await checkImage(image);
@@ -52,6 +52,31 @@ const checkRegister = async (name, image, email) => {
     }
 }
 
+const checkEdit = async (_id, name, image, email) => {
+    try {
+        const old = await Member.findOne({ _id });
+
+        email = await checkEmail(email);
+
+        if (email !== old.email) {
+            const member = await Member.findOne({ email });
+
+            if (member) {
+                throw { message: "Email đã tồn tại!" };
+            }
+        }
+
+        name = await checkName(name);
+        image = await checkImage(image);
+
+        return { name, email, image };
+    } catch (e) {
+        console.log("ERROR: " + e);
+        throw e;
+    }
+}
+
 module.exports = {
-    checkRegister
+    checkRegister,
+    checkEdit
 }
