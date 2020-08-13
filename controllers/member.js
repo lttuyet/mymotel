@@ -1,5 +1,6 @@
 const checkMember = require('../checks/member');
 const Member = require('../models/members');
+const Motel = require('../models/motels');
 const motel = require('../checks/motel');
 
 exports.add = async (req, res) => {
@@ -34,6 +35,31 @@ exports.edit = async (req, res) => {
         return res.json({
             status: "success",
             message: "Cập nhật thông tin cá nhân thành công!"
+        });
+    } catch (e) {
+        console.log("ERROR: ");
+        console.log(e);
+
+        return res.json({
+            status: "failed",
+            message: e.message
+        });
+    }
+}
+
+exports.delete = async (req, res) => {
+    try {
+        const { _id, mtID } = req.user;
+        const member = await Member.updateOne({ _id }, { isDeleted: true }, { runValidators: true });
+        const countExistedMember = await Member.countDocuments({ mtID, isDeleted: false });
+
+        if (countExistedMember < 1) {
+            await Motel.updateOne({ _id: mtID }, { isDeleted: true }, { runValidators: true });
+        }
+
+        return res.json({
+            status: "success",
+            message: "Rời khỏi gia đình thành công!"
         });
     } catch (e) {
         console.log("ERROR: ");

@@ -13,7 +13,7 @@ module.exports = function (passport) {
             email = email.trim();
             email = email.toLowerCase();
 
-            const user = await Member.findOne({ email });
+            const user = await Member.findOne({ email, isDeleted: false });
 
             if (!user) {
                 return done(null, false, { status: "failed", message: "Tài khoản không tồn tại!" });
@@ -43,7 +43,7 @@ module.exports = function (passport) {
                 secretOrKey: process.env.KEY
             },
             function (jwtPayload, cb) {
-                return Member.findOne({ _id: jwtPayload._id })
+                return Member.findOne({ _id: jwtPayload._id, isDeleted: false })
                     .then(user => {
                         return cb(null, user);
                     })
