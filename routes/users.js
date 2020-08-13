@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const motelController = require("../controllers/motel.js")
+const motelController = require("../controllers/motel.js");
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
