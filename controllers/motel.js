@@ -70,3 +70,26 @@ exports.login = async (req, res, next) => {
         });
     }
 }
+
+
+exports.edit = async (req, res) => {
+    try {
+        const { name, image } = req.body;
+        const { mtID } = req.user;
+        const data = await checkMotel.checkEdit(name, image);
+        const motel = await Motel.updateOne({ _id: mtID }, data);
+
+        return res.json({
+            status: "success",
+            message: "Cập nhật thông tin phòng trọ thành công!"
+        });
+    } catch (e) {
+        console.log("ERROR: ");
+        console.log(e);
+
+        return res.json({
+            status: "failed",
+            message: e.message
+        });
+    }
+}

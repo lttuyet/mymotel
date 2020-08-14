@@ -45,6 +45,19 @@ const checkRegister = async (name, image, password) => {
     }
 }
 
+const checkEdit = async (name, image, password) => {
+    try {
+        name = await checkName(name);
+        image = await checkImage(image);
+
+        return { name, image };
+    } catch (e) {
+        console.log("ERROR: " + e);
+        throw e;
+    }
+}
+
 module.exports = {
-    checkRegister
+    checkRegister,
+    checkEdit
 }
