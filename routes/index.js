@@ -10,5 +10,6 @@ router.get('/', function(req, res, next) {
 router.post('/add-member', memberController.add);
 router.post('/edit-member', memberController.edit);
 router.post('/delete-member', memberController.delete);
+router.get('/list-member', memberController.list);
 
 module.exports = router;

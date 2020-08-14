@@ -71,3 +71,23 @@ exports.delete = async (req, res) => {
         });
     }
 }
+
+exports.list = async (req, res) => {
+    try {
+        const { mtID } = req.user;
+        const listMembers = await Member.find({mtID, isDeleted:false});
+
+        return res.json({
+            status: "success",
+            message: "Lấy danh sách thành viên thành công!",
+            listMembers
+        });
+    } catch (e) {
+        console.log("ERROR: " + e);
+
+        return res.json({
+            status: "failed",
+            message: "Lấy danh sách thành viên thất bại!"
+        });
+    }
+}
