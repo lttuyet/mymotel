@@ -14,5 +14,6 @@ router.post('/delete-member', memberController.delete);
 router.get('/list-member', memberController.list);
 
 router.post('/edit-motel', motelController.edit);
+router.post('/change-password', motelController.changePassword);
 
 module.exports = router;

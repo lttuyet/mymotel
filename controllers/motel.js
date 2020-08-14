@@ -4,6 +4,9 @@ const checkMotel = require('../checks/motel');
 const checkMember = require('../checks/member');
 const passport = require('passport');
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const SALT_ROUNDS = 9;
+const mailer = require('../nodemailer');
 
 exports.register = async (req, res) => {
     try {
@@ -71,7 +74,6 @@ exports.login = async (req, res, next) => {
     }
 }
 
-
 exports.edit = async (req, res) => {
     try {
         const { name, image } = req.body;
@@ -82,6 +84,48 @@ exports.edit = async (req, res) => {
         return res.json({
             status: "success",
             message: "Cập nhật thông tin phòng trọ thành công!"
+        });
+    } catch (e) {
+        console.log("ERROR: ");
+        console.log(e);
+
+        return res.json({
+            status: "failed",
+            message: e.message
+        });
+    }
+}
+
+
+exports.changePassword = async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        const { mtID, _id, name } = req.user;
+        const check = await checkMotel.checkChangePassword(mtID, oldPassword, newPassword);
+        const hash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+        const motel = await Motel.updateOne({ _id: mtID }, { password: hash });
+        const members = await Member.find({ mtID, isDeleted: false, _id: { $ne: _id } });
+        const l = members.length;
+
+        for (let i = 0; i < l; i++) {
+            const html = "Chào " + members[i].name + ",<br><br>"
+                + name
+                + " đã thay đổi mật khẩu đăng nhập của phòng trọ trên ứng dụng MyMotel.<br><br>"
+                + "Vui lòng liên hệ "
+                + name
+                + " để biết thêm chi tiết về sự thay đổi mật khẩu này.<br><br>"
+                + "Cảm ơn bạn đã sử dụng ứng dụng MyMotel của chúng tôi!";
+
+            try {
+                await mailer.sendMail(process.env.PORT, members[i].email, "[MyMotel] Thay đổi mật khẩu phòng trọ", html);
+            } catch (e) {
+                console.log("ERROR: " + e);
+            }
+        }
+
+        return res.json({
+            status: "success",
+            message: "Đổi mật khẩu thành công!"
         });
     } catch (e) {
         console.log("ERROR: ");

@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const SALT_ROUNDS = 9;
+const Motel = require('../models/motels');
 const { formatString, checkImage } = require('./basic');
 
 const checkName = async (name) => {
@@ -57,7 +58,31 @@ const checkEdit = async (name, image, password) => {
     }
 }
 
+const checkChangePassword = async (mtID, oldPassword, newPassword) => {
+    try {
+        const motel = await Motel.findOne({ _id: mtID });
+        const currentPassword = motel.password;
+        const isMatch = await bcrypt.compare(oldPassword, currentPassword);
+
+        if (isMatch) {
+            if (oldPassword === newPassword) {
+                throw { message: "Mật khẩu mới giống mật khẩu hiện tại!" };
+            }
+
+            if (newPassword.split(" ").length !== 1 || newPassword.length < 6) {
+                throw { message: "Mật khẩu mới không hợp lệ!" };
+            }
+        }else{
+            throw { message: "Mật khẩu hiện tại không đúng!" };
+        }
+    } catch (e) {
+        console.log("ERROR: " + e);
+        throw e;
+    }
+}
+
 module.exports = {
     checkRegister,
-    checkEdit
+    checkEdit,
+    checkChangePassword
 }
